@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f4; }
+        .login-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
+        h2 { text-align: center; color: #333; }
+        label { display: block; margin-bottom: 8px; color: #555; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        .error-message { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; border-radius: 4px; margin-bottom: 15px; text-align: center; }
+        .logout-message { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px; margin-bottom: 15px; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h2>Iniciar Sesión</h2>
+
+    <div th:if="${param.error}" class="error-message">
+        Usuario o contraseña incorrectos.
+    </div>
+
+    <div th:if="${param.logout}" class="logout-message">
+        Has cerrado sesión exitosamente.
+    </div>
+
+    <form th:action="@{/api/authentication/sign-in}" method="post">
+        <div>
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" name="username" required autofocus />
+        </div>
+        <div>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required />
+        </div>
+        <div>
+            <button type="submit">Entrar</button>
+        </div>
+    </form>
+    <div style="text-align: center; margin-top: 15px;">
+        <p>¿No tienes cuenta? <a th:href="@{/api/authentication/sign-up-page}">Regístrate aquí</a></p> </div>
+</div>
+</body>
+</html>

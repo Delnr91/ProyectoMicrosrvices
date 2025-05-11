@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Inmobiliario</title>
+</head>
+<body>
+<h1>Bienvenido al Dashboard</h1>
+
+<div th:if="${currentUser}">
+    <p>Hola, <span th:text="${currentUser.nombre}">Nombre Usuario</span>!</p>
+    <p>Tu rol es: <span th:text="${currentUser.role}">ROL</span></p>
+</div>
+<div th:unless="${currentUser}">
+    <p>No hay un usuario autenticado.</p>
+</div>
+
+<h2>Acciones</h2>
+<ul>
+    <li><a th:href="@{/gateway/inmueble}">Ver Inmuebles (JSON - API Gateway)</a></li>
+</ul>
+
+<h2>Swagger UI de los Servicios</h2>
+<ul>
+    <li><a th:href="@{/swagger-ui.html}" target="_blank">Swagger UI - API Gateway</a></li>
+    <li><a th:href="@{http://localhost:3333/swagger-ui.html}" target="_blank">Swagger UI - Inmueble Service</a> (requiere servicio corriendo)</li>
+    <li><a th:href="@{http://localhost:4444/swagger-ui.html}" target="_blank">Swagger UI - Compra Service</a> (requiere servicio corriendo)</li>
+</ul>
+
+</body>
+</html>
