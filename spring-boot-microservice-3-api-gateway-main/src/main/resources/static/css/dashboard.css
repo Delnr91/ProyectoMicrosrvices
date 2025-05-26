@@ -1,0 +1,171 @@
+/* static/css/dashboard.css */
+
+/* 1. BODY Y LAYOUT GENERAL DEL DASHBOARD */
+body.dashboard-body {
+    font-family: var(--font-main);
+    background-image: url('../images/fondo.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--color-text-secondary);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* El body ocupa al menos toda la altura */
+    margin: 0;
+    padding-top: 65px; /* Espacio reservado para el navbar fijo */
+}
+
+/* 2. NAVBAR DEL DASHBOARD (FIJO) */
+.dashboard-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--space-padding-base);
+    background-color: rgba(var(--color-surface-medium-rgb, 35, 40, 48), 0.75);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    height: 65px;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(var(--color-border-subtle-rgb, 58, 63, 71), 0.3);
+}
+.navbar-brand-dashboard a { display: flex; align-items: center; font-size: 1.25em; font-weight: 700; color: var(--color-accent); text-decoration: none; letter-spacing: 0.5px;}
+.navbar-links-dashboard { display: flex; align-items: center; }
+.welcome-text-dashboard { margin-right: calc(var(--space-margin-base) * 1.2); font-size: 0.85em; color: var(--color-text-secondary); }
+.welcome-text-dashboard strong { color: var(--color-text-primary); font-weight: 500; }
+button.button-logout-dashboard { background: none; border: 1px solid var(--color-text-muted); color: var(--color-text-muted); cursor: pointer; font-family: var(--font-main); font-size: 0.8em; padding: 7px 12px; border-radius: var(--size-border-radius); transition: all 0.2s ease; display: inline-flex; align-items: center;}
+button.button-logout-dashboard:hover { background-color: var(--color-danger-text); border-color: var(--color-danger-text); color: var(--color-text-primary); }
+button.button-logout-dashboard i { margin-right: 6px; }
+
+/* 3. SIDEBAR DEL DASHBOARD (FIJO) */
+.sidebar {
+    width: 240px;
+    background-color: rgba(var(--color-surface-medium-rgb, 35, 40, 48), 0.88);
+    backdrop-filter: blur(10px);
+    color: var(--color-text-secondary);
+    border-right: 1px solid rgba(var(--color-border-subtle-rgb), 0.3);
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 65px);
+    position: fixed;
+    left: 0;
+    top: 65px;
+    box-sizing: border-box;
+    z-index: 800;
+}
+.sidebar-logo-container { text-align: center; padding: 20px 15px; margin-bottom: 10px; border-bottom: 1px solid rgba(var(--color-border-subtle-rgb), 0.3); display: flex; justify-content: center; align-items: center; height: 100px; }
+.sidebar-logo { width: auto; max-width: 85%; max-height: 85px; height: auto; }
+.sidebar-sticky-content { flex-grow: 1; overflow-y: auto; padding: var(--space-padding-base); }
+.sidebar .sidebar-menu-group { margin-bottom: calc(var(--space-margin-base) * 1.2); }
+.sidebar h3 { color: var(--color-accent); border-bottom: 1px solid rgba(var(--color-border-subtle-rgb), 0.3); padding-bottom: 8px; margin-top: 0; margin-bottom: 12px; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
+.sidebar ul { list-style-type: none; padding: 0; margin: 0; }
+.sidebar ul li a { display: flex; align-items: center; color: var(--color-text-secondary); padding: 10px var(--space-padding-base); margin-bottom: 4px; border-radius: var(--size-border-radius); transition: all 0.2s ease; font-size: 0.88em; border-left: 3px solid transparent; }
+.sidebar ul li a:hover { background-color: rgba(var(--color-accent-rgb), 0.2); color: var(--color-accent); border-left-color: var(--color-accent); }
+.sidebar ul li a.active { background-color: var(--color-accent); color: var(--color-text-on-accent); font-weight: 600; border-left-color: var(--color-accent-darker); }
+.sidebar ul li a i { margin-right: 10px; width: 18px; text-align: center; color: var(--color-text-muted); transition: color 0.2s ease; font-size: 1.05em; }
+.sidebar ul li a:hover i, .sidebar ul li a.active i { color: inherit; }
+
+/* 4. CONTENEDOR PRINCIPAL DEL CONTENIDO Y FOOTER (HIJO DEL BODY, HERMANO DEL NAVBAR) */
+.dashboard-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Este contenedor crecerá para llenar el espacio restante del body */
+    width: 100%;
+    /* No necesita padding-top si el body ya lo tiene */
+}
+
+/* 5. LAYOUT PARA EL ÁREA DE CONTENIDO PRINCIPAL (HIJO DE dashboard-content-wrapper Y HERMANO DEL FOOTER) */
+.dashboard-layout-main {
+    display: flex; /* Aunque el sidebar es fixed, esto ayuda a estructurar el content-area */
+    flex-grow: 1; /* Esencial: este es el que realmente empujará el footer hacia abajo */
+}
+
+/* 6. ÁREA DE CONTENIDO PRINCIPAL (HIJO DE dashboard-layout-main) */
+.content-area {
+    flex-grow: 1; /* Asegura que el content-area use el espacio que le da su padre */
+    padding: calc(var(--space-padding-base) * 1.8);
+    overflow-y: auto; /* Scroll solo para el contenido si excede */
+    margin-left: 240px; /* Espacio para el sidebar fijo */
+    max-width: 1100px;
+    margin-right: auto;
+    box-sizing: border-box;
+    padding-bottom: calc(var(--space-padding-base) * 3); /* Espacio antes del footer */
+}
+
+/* ESTILOS RESTANTES (cards, tablas, forms, etc. se mantienen como en la versión anterior) */
+.content-title { color: var(--color-text-primary); border-bottom: 2px solid var(--color-accent); padding-bottom: 12px; margin-bottom: calc(var(--space-margin-base) * 2); font-size: 1.9em; font-weight: 700; }
+.content-card, .table-container, .form-container-card { background-color: rgba(var(--color-surface-medium-rgb, 35, 40, 48), 0.88); backdrop-filter: blur(10px); padding: calc(var(--space-padding-base) * 1.5); border-radius: var(--size-border-radius); margin-bottom: calc(var(--space-margin-base) * 1.8); border: 1px solid rgba(var(--color-accent-rgb), 0.25); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+.content-card h2, .table-container h2, .form-container-card h2 { color: var(--color-accent); margin-top: 0; border-bottom: 1px solid rgba(var(--color-border-subtle-rgb), 0.3); padding-bottom: calc(var(--space-padding-base) * 0.7); margin-bottom: calc(var(--space-margin-base) * 1.2); font-size: 1.3em; font-weight: 600; }
+.content-card h3 { font-size: 1.1em; color: var(--color-text-primary); font-weight: 500; margin-top: 0; margin-bottom: calc(var(--space-margin-base) * 0.8); }
+.welcome-message-dashboard { border-left: 4px solid var(--color-accent); }
+.data-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.88em; color: var(--color-text-secondary); }
+.data-table th, .data-table td { border-bottom: 1px solid rgba(var(--color-border-subtle-rgb), 0.35); padding: 12px 10px; }
+.data-table td:first-child, .data-table th:first-child { padding-left: var(--space-padding-base); }
+.data-table td:last-child, .data-table th:last-child { padding-right: var(--space-padding-base); text-align: right; }
+.data-table thead th { background-color: transparent; color: var(--color-accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; border-bottom-width: 2px; border-bottom-color: var(--color-accent); }
+.data-table tbody tr { transition: background-color 0.15s ease; }
+.data-table tbody tr:nth-child(even) { background-color: rgba(var(--color-background-dark-rgb), 0.2); }
+.data-table tbody tr:hover { background-color: rgba(var(--color-accent-rgb), 0.15); color: var(--color-text-primary); }
+.button-icon { padding: 6px 9px; font-size: 0.82em; color: var(--color-text-on-accent); border: none; border-radius: var(--size-border-radius); cursor: pointer; transition: background-color 0.2s ease, opacity 0.2s ease; margin: 2px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; line-height: 1; }
+.button-icon i { font-size: 1em; }
+.button-edit { background-color: var(--color-info-text); color: white; }
+.button-edit:hover { background-color: var(--color-info-bg); color: var(--color-info-text);}
+.button-delete { background-color: var(--color-danger-text); color: white;}
+.button-delete:hover { background-color: var(--color-danger-bg); color: var(--color-danger-text); }
+.button-view { background-color: var(--color-success-text); color: white;}
+.button-view:hover { background-color: var(--color-success-bg); color: var(--color-success-text); }
+.button-accent, button[type="submit"] { background-color: var(--color-accent); color: var(--color-text-on-accent); padding: 9px 18px; font-size: 0.92em; border: none; border-radius: var(--size-border-radius); cursor: pointer; transition: background-color 0.2s ease, transform 0.1s ease; text-decoration: none; display: inline-flex; align-items: center; font-weight: 500; }
+.button-accent:hover, button[type="submit"]:hover { background-color: var(--color-accent-darker); transform: translateY(-1px); }
+.button-accent i, button[type="submit"] i { margin-right: 8px; }
+.button-secondary { background-color: var(--color-surface-medium); color: var(--color-text-secondary); border: 1px solid var(--color-border-subtle); padding: 9px 18px; font-size: 0.92em; border-radius: var(--size-border-radius); cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease; text-decoration: none; display: inline-flex; align-items: center; font-weight: 500; }
+.button-secondary:hover { background-color: var(--color-border-subtle); color: var(--color-text-primary); }
+.button-secondary i { margin-right: 8px; }
+.styled-form .form-group { margin-bottom: calc(var(--space-margin-base) * 1.3); }
+.styled-form label { display: block; font-size: 0.88em; color: var(--color-text-secondary); margin-bottom: 7px; font-weight: 500; }
+.styled-form .form-control { width: 100%; background-color: rgba(var(--color-background-dark-rgb), 0.75); border: 1px solid var(--color-border-subtle); color: var(--color-text-primary); font-family: var(--font-main); font-size: 0.92em; padding: 10px 14px; border-radius: var(--size-border-radius); transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+.styled-form .form-control:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.20); }
+.form-control-static, .form-group-readonly p { display: block; width: 100%; padding: 10px 14px; margin-bottom: var(--space-margin-base); font-size: 0.92em; line-height: 1.5; color: var(--color-text-muted); background-color: rgba(var(--color-background-dark-rgb), 0.4); border: 1px solid var(--color-border-subtle); border-radius: var(--size-border-radius); box-sizing: border-box; }
+.form-actions { margin-top: calc(var(--space-margin-base) * 1.5); padding-top: calc(var(--space-padding-base) * 1.2); border-top: 1px solid rgba(var(--color-border-subtle-rgb), 0.35); display: flex; gap: var(--space-margin-base); }
+.dashboard-quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: calc(var(--space-margin-base) * 1.5); }
+.quick-action-card h3 { font-size: 1.15em; color: var(--color-accent); margin-bottom: var(--space-margin-base); }
+.quick-action-card ul { list-style: none; padding: 0; margin: 0; }
+.quick-action-card ul li { margin-bottom: calc(var(--space-margin-base) * 0.7); }
+.quick-action-card ul li a.button-accent-outline, .quick-action-card ul li .button-accent-outline { display: block; text-align: left; border: 1px solid var(--color-accent); color: var(--color-accent); padding: 11px 15px; font-size: 0.9em; border-radius: var(--size-border-radius); transition: all 0.2s ease; font-weight: 500; background-color: transparent; }
+.quick-action-card ul li a.button-accent-outline:hover, .quick-action-card ul li .button-accent-outline:hover { background-color: rgba(var(--color-accent-rgb), 0.15); color: var(--color-accent-darker); border-color: var(--color-accent-darker); }
+.quick-action-card ul li a.button-accent-outline i, .quick-action-card ul li .button-accent-outline i { margin-right: 8px; font-size: 1.05em; min-width: 18px; text-align: center; }
+.quick-action-statistic { padding-top: 12px; margin-top: 12px; border-top: 1px dashed rgba(var(--color-border-subtle-rgb), 0.35); font-size: 0.92em; color: var(--color-text-secondary); display: flex; align-items: center; }
+.quick-action-statistic strong { color: var(--color-accent); font-weight: 600; margin-left: 5px; }
+.quick-action-statistic i { color: var(--color-accent); margin-right: 10px; font-size: 1.1em; }
+.quick-action-error { font-size: 0.88em; padding-top: 8px; color: var(--color-danger-text); display: flex; align-items: center; }
+.quick-action-error i { margin-right: 8px; }
+.inmueble-detalle-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space-margin-base) * 1.5); align-items: start; }
+.inmueble-imagen-container { background-color: rgba(var(--color-background-dark-rgb), 0.5); border-radius: var(--size-border-radius); padding: var(--space-padding-base); border: 1px solid var(--color-border-subtle); display: flex; justify-content: center; align-items: center; min-height: 250px; }
+.inmueble-detalle-imagen { max-width: 100%; max-height: 400px; object-fit: contain; border-radius: calc(var(--size-border-radius) * 0.5); }
+.inmueble-detalle-no-imagen { text-align: center; color: var(--color-text-muted); }
+.inmueble-detalle-no-imagen i { font-size: 4em; }
+.inmueble-info-container h2 { color: var(--color-accent); font-size: 2em; margin-bottom: var(--space-margin-base); font-weight: 700; border-bottom: none; padding-bottom: 0; }
+.inmueble-info-container p { font-size: 0.95em; color: var(--color-text-secondary); line-height: 1.6; }
+.inmueble-info-container p strong { color: var(--color-text-primary); font-weight: 500; }
+.button-compra-grande { padding: 12px 25px; font-size: 1.05em; font-weight: bold; }
+.button-compra-grande i { margin-right: 10px; }
+@media (min-width: 768px) { .inmueble-detalle-grid { grid-template-columns: minmax(300px, 1fr) 2fr; } }
+.empty-message-cell { text-align: center !important; padding: 25px var(--space-padding-base) !important; color: var(--color-text-muted) !important; font-style: italic; font-size: 0.95em; }
+.empty-message-cell a { color: var(--color-accent) !important; font-weight: 500; }
+.empty-message-cell a:hover { color: var(--color-accent-darker) !important; text-decoration: underline; }
+.principal-admin-text { font-size: 0.8em; color: var(--color-text-muted); font-style: italic; }
+
+/* 7. FOOTER (para el dashboard: transparente, texto centrado) */
+/* La clase .home-footer viene del fragmento footer.html */
+body.dashboard-body .dashboard-content-wrapper > .home-footer {
+    margin-top: auto;
+}
+body.dashboard-body .home-footer a {
+    color: var(--color-text-secondary); /* Enlaces del footer un poco menos brillantes que el acento principal */
+}
+body.dashboard-body .home-footer a:hover {
+    color: var(--color-accent);
+}

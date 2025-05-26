@@ -1,142 +1,170 @@
-body {
-    font-family: 'Arial', sans-serif;
+/* static/css/style.css */
+:root {
+    /* Fuentes Globales */
+    --font-main: 'Inter', 'Arial', sans-serif;
+    --font-monospace: 'Roboto Mono', 'Courier New', Courier, monospace;
+
+    /* Paleta de Colores Principal (Consolidada y basada en tu home.css preferido) */
+    --color-background-dark: #1A1E24;    /* Fondo muy oscuro principal (de home.css) */
+    --color-background-dark-rgb: 26, 30, 36; /* Componentes R, G, B para usar en rgba() */
+    --color-surface-medium: #232830;     /* Gris oscuro para superficies secundarias (del style.css original) */
+    --color-surface-medium-rgb: 35, 40, 48; /* Para rgba */
+    --color-border-subtle: #3A3F47;      /* Borde sutil (del style.css original) */
+    --color-border-subtle-rgb: 58, 63, 71;
+
+    --color-text-primary: #FFFFFF;       /* Texto principal blanco brillante (de home.css) */
+    --color-text-secondary: #E0E0E0;     /* Texto secundario, menos brillante (de home.css) */
+    --color-text-muted: #A0A0A0;         /* Texto aún más atenuado (del style.css original) */
+
+    --color-accent: #CEFF1A;             /* Amarillo/lima neón (de home.css y style.css original) */
+    --color-accent-darker: #b8e600;      /* Tono más oscuro del acento (del style.css original) */
+    --color-accent-rgb: 206, 255, 26;    /* Componentes RGB de --color-accent (del style.css original) */
+
+    --color-text-on-accent: #1A1E24;     /* Texto oscuro para usar sobre fondos --color-accent (de home.css) */
+
+    /* Colores de Estado y Roles (del style.css original, ajustados a nueva nomenclatura si es necesario) */
+    --color-success-text: #28a745;
+    --color-success-bg: rgba(40, 167, 69, 0.15);
+    --color-danger-text: #dc3545;
+    --color-danger-bg: rgba(220, 53, 69, 0.1);
+    --color-warning-text: #ffc107;
+    --color-warning-bg: rgba(255, 193, 7, 0.15);
+    --color-info-text: #17a2b8;
+    --color-info-bg: rgba(23, 162, 184, 0.1);
+
+    --color-role-admin-text: #007bff;
+    --color-role-admin-bg: rgba(0, 123, 255, 0.15);
+    --color-role-user-text: #6c757d;
+    --color-role-user-bg: rgba(108, 117, 125, 0.15);
+
+    /* Tamaños y Espaciados Base (del style.css original) */
+    --size-border-radius: 6px;
+    --space-padding-base: 15px;
+    --space-margin-base: 15px;
+}
+
+/* Reset Básico y Estilos Globales */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
     margin: 0;
-    background-color: #f4f7f6;
-    color: #333;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-main); /* Fuente principal global ahora es 'Inter' */
+    background-color: var(--color-background-dark);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    font-size: 16px;
     display: flex;
-    min-height: 100vh;
     flex-direction: column;
+    min-height: 100vh;
 }
 
-.navbar {
-    background-color: #2c3e50;
-    color: white;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-margin-base);
+    font-weight: 600;
+    line-height: 1.3;
 }
 
-.navbar-brand {
-    font-size: 1.5em;
-    font-weight: bold;
+p {
+    margin-bottom: var(--space-margin-base);
 }
 
-.navbar-links a {
-    color: white;
+a {
+    color: var(--color-accent);
     text-decoration: none;
-    margin-left: 20px;
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+a:hover {
+    color: var(--color-accent-darker);
 }
 
-.navbar-links a:hover, .navbar-links form button:hover {
-    background-color: #34495e;
-}
-
-.navbar-links form {
-    display: inline;
-    margin-left: 20px;
-}
-
-.navbar-links form button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 1em;
-    font-family: 'Arial', sans-serif;
-    padding: 8px 12px;
-}
-
-.main-container {
-    display: flex;
-    flex: 1;
-}
-
-.sidebar {
-    width: 220px;
-    background-color: #34495e;
-    padding: 20px;
-    color: #ecf0f1;
-}
-
-.sidebar h3 {
-    margin-top: 0;
-    color: #ffffff;
-    border-bottom: 1px solid #4a627a;
-    padding-bottom: 10px;
-}
-
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar ul li a {
+img {
+    max-width: 100%;
+    height: auto;
     display: block;
-    color: #ecf0f1;
-    text-decoration: none;
-    padding: 10px 15px;
-    margin-bottom: 5px;
-    border-radius: 4px;
-    transition: background-color 0.3s, padding-left 0.3s;
 }
 
-.sidebar ul li a:hover {
-    background-color: #4a627a;
-    padding-left: 20px;
-}
+/* Estilos para scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--color-surface-medium); border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: var(--color-border-subtle); border-radius: 10px; transition: background-color 0.2s ease-in-out; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+* { scrollbar-width: thin; scrollbar-color: var(--color-border-subtle) var(--color-surface-medium); }
 
-.content-area {
-    flex-grow: 1;
-    padding: 30px;
-    background-color: #ffffff;
-    overflow-y: auto;
-}
+/* Utilidades de Texto y Espaciado */
+.text-accent { color: var(--color-accent) !important; }
+.text-primary { color: var(--color-text-primary) !important; }
+.text-secondary { color: var(--color-text-secondary) !important; }
+.text-muted { color: var(--color-text-muted) !important; }
+.text-danger { color: var(--color-danger-text) !important; }
+.text-success { color: var(--color-success-text) !important; }
+.text-warning { color: var(--color-warning-text) !important; }
 
-.welcome-message {
-    background-color: #eaf4ff;
-    border-left: 5px solid #007bff;
-    padding: 15px;
-    margin-bottom: 25px;
-    border-radius: 4px;
-}
-.welcome-message p { margin: 5px 0; }
+.text-center { text-align: center; }
+.d-block { display: block; }
 
-.content-title {
-    color: #2c3e50;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
+.mt-1 { margin-top: calc(var(--space-margin-base) * 0.5); }
+.mt-2 { margin-top: var(--space-margin-base); }
+.mt-3 { margin-top: calc(var(--space-margin-base) * 1.5); }
+.mb-1 { margin-bottom: calc(var(--space-margin-base) * 0.5); }
+.mb-2 { margin-bottom: var(--space-margin-base); }
+.mb-3 { margin-bottom: calc(var(--space-margin-base) * 1.5); }
 
-.action-links_title {
-     margin-top: 30px;
-}
-
-.action-links ul {
-    list-style-type: none;
-    padding: 0;
-}
-.action-links ul li {
-    margin-bottom: 10px;
-}
-.action-links ul li a {
-    text-decoration: none;
-    color: #007bff;
+/* Status Badges */
+.status-badge {
     font-weight: bold;
+    padding: 5px 10px;
+    border-radius: var(--size-border-radius);
+    font-size: 0.8em;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+    line-height: 1.2;
 }
-.action-links ul li a:hover {
-    text-decoration: underline;
-}
+.status-disponible { background-color: var(--color-success-bg); color: var(--color-success-text); border-color: var(--color-success-text); }
+.status-vendido { background-color: var(--color-danger-bg); color: var(--color-danger-text); border-color: var(--color-danger-text); }
+.status-reservado { background-color: var(--color-warning-bg); color: var(--color-warning-text); border-color: var(--color-warning-text); }
+.status-desconocido { background-color: var(--color-surface-medium); color: var(--color-text-muted); border-color: var(--color-border-subtle); }
+.status-admin-role { background-color: var(--color-role-admin-bg); color: var(--color-role-admin-text); border-color: var(--color-role-admin-text); }
+.status-user-role { background-color: var(--color-role-user-bg); color: var(--color-role-user-text); border-color: var(--color-role-user-text); }
 
-.footer {
+/* Message Area */
+.message-area {
+    padding: var(--space-padding-base);
+    margin-bottom: var(--space-margin-base);
+    border-radius: var(--size-border-radius);
     text-align: center;
-    padding: 15px;
-    background-color: #2c3e50;
-    color: white;
-    font-size: 0.9em;
+    font-size: 0.95em;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.message-area i { font-size: 1.2em; }
+.message-area.success-message { background-color: var(--color-success-bg); color: var(--color-success-text); border-color: var(--color-success-text); }
+.message-area.error-message { background-color: var(--color-danger-bg); color: var(--color-danger-text); border-color: var(--color-danger-text); }
+.message-area.info-message { background-color: var(--color-info-bg); color: var(--color-info-text); border-color: var(--color-info-text); }
+.message-area.warning-message { background-color: var(--color-warning-bg); color: var(--color-warning-text); border-color: var(--color-warning-text); }
+
+/* Clase general para contenedores de superficie que estaba en tu style.css original */
+.surface-container {
+    background-color: var(--color-surface-medium);
+    border-radius: var(--size-border-radius);
+    padding: var(--space-padding-base);
+    margin-bottom: var(--space-margin-base);
+    border: 1px solid var(--color-border-subtle);
 }

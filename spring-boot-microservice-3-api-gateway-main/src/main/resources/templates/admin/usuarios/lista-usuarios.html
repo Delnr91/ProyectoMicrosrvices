@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/header :: page_head(${pageTitle ?: 'Gestionar Usuarios'}, 'usuarios')}"></head>
+
+<body class="dashboard-body">
+
+<div th:replace="~{fragments/header :: navbar}"></div>
+
+<div class="dashboard-content-wrapper">
+
+    <div class="dashboard-layout-main">
+        <div th:replace="~{fragments/sidebar :: sidebar(activePage='usuarios')}"></div>
+
+        <main class="content-area">
+            <h1 class="content-title" th:text="${pageTitle ?: 'Gestión de Usuarios del Sistema'}">Gestión de Usuarios del Sistema</h1>
+
+            <div th:if="${mensajeExito}" class="message-area success-message mb-3">
+                <i class="fas fa-check-circle"></i> <span th:text="${mensajeExito}"></span>
+            </div>
+            <div th:if="${mensajeError}" class="message-area error-message mb-3">
+                <i class="fas fa-exclamation-triangle"></i> <span th:text="${mensajeError}"></span>
+            </div>
+
+            <div class="content-card table-container">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Nombre Completo</th>
+                        <th>Rol</th>
+                        <th>Fecha Creación</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(usuarios) OR (#lists.size(usuarios) == 1 AND usuarios[0].username == principalAdminUsername)}">
+                        <td colspan="6" class="empty-message-cell">
+                            No hay otros usuarios gestionables registrados en el sistema.
+                        </td>
+                    </tr>
+                    <tr th:each="usuario : ${usuarios}">
+                        <td th:text="${usuario.id}">1</td>
+                        <td th:text="${usuario.username}">username.ejemplo</td>
+                        <td th:text="${usuario.nombre ?: '-'}">Nombre Apellido</td>
+                        <td>
+                                <span th:text="${usuario.role}"
+                                      th:classappend="${usuario.role.name() == 'ADMIN' ? 'status-admin-role' : 'status-user-role'}"
+                                      class="status-badge">
+                                    ROL
+                                </span>
+                        </td>
+                        <td th:text="${usuario.fechaCreacion != null ? #temporals.format(usuario.fechaCreacion, 'dd-MM-yyyy HH:mm') : 'N/A'}">01-01-2025 10:30</td>
+                        <td>
+                            <th:block th:if="${usuario.username != principalAdminUsername}">
+                                <a th:href="@{'/ui/admin/usuarios/editar/' + ${usuario.id}}" class="button-icon button-edit" title="Editar Usuario">
+                                    <i class="fas fa-user-edit"></i>
+                                </a>
+                                <a th:href="@{'/ui/admin/usuarios/eliminar/' + ${usuario.id}}" class="button-icon button-delete" title="Eliminar Usuario"
+                                   th:onclick="'return confirm(\'¿Estás seguro de que deseas eliminar al usuario \\'' + ${#strings.escapeJavaScript(usuario.username)} + '\\'? Esta acción no se puede deshacer.\');'">
+                                    <i class="fas fa-user-times"></i>
+                                </a>
+                            </th:block>
+                            <span th:if="${usuario.username == principalAdminUsername}" class="principal-admin-text">(Admin Principal)</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle ?: 'Bienvenido a DaniDev Portal'}">Bienvenido a DaniDev Portal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body class="home-page-body">
+
+<nav class="home-navbar-top">
+    <div class="navbar-brand-top">
+    </div>
+    <div class="navbar-links-top">
+        <a th:href="@{/ui/catalogo}" class="nav-action-link">Ver Inmuebles</a> <a th:href="@{/login}" class="nav-action-link login-button" sec:authorize="!isAuthenticated()">Iniciar Sesión</a> <th:block sec:authorize="isAuthenticated()">
+        <a th:href="@{/ui/dashboard}" class="nav-action-link dashboard-button">Mi Panel</a>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="nav-action-link logout-button">Cerrar Sesión</button>
+        </form>
+    </th:block>
+    </div>
+</nav>
+
+<main class="hero-container-main" role="main">
+    <div class="hero-content-centered">
+        <img th:src="@{/images/logo2.png}" alt="DaniDev Full Stack Software" class="hero-logo-center">
+        <h2 class="hero-main-title">Encuentra la Casa de Tus Sueños</h2> <p class="hero-main-subtitle">Explora y descubre propiedades exclusivas en venta.</p> <div class="hero-buttons-container">
+        <a th:href="@{/ui/catalogo}" class="hero-btn primary">Ver Inmuebles</a> </div>
+    </div>
+</main>
+
+<footer class="home-footer">
+    <p>&copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span> Daniel Núñez Rojas. Todos los derechos reservados.</p>
+    <p>
+        Desarrollado por
+        <a href="https://www.linkedin.com/in/delnr91" target="_blank" rel="noopener noreferrer" class="footer-link">danidev fullstack software</a>.
+        Contacto: <a href="mailto:invdesdev33@gmail.com" class="footer-link">invdesdev33@gmail.com</a>
+    </p>
+</footer>
+
+</body>
+</html>

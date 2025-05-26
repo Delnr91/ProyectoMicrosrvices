@@ -16,9 +16,11 @@ import java.time.LocalDateTime;
  */
 public record InmuebleDto(
         Long id,
+        Long userId,
         String name,
         String address,
         String picture,
         Double price,
-        LocalDateTime creationDate
+        LocalDateTime creationDate,
+        String estado
 ) {}

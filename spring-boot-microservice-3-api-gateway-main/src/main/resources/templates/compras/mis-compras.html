@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/header :: page_head(${pageTitle ?: 'Mis Compras'}, 'mis-compras')}"></head> <body class="dashboard-body">
+
+<div th:replace="~{fragments/header :: navbar}"></div>
+
+<div class="dashboard-content-wrapper">
+
+    <div class="dashboard-layout-main">
+        <div th:replace="~{fragments/sidebar :: sidebar(activePage='mis-compras')}"></div> <main class="content-area">
+        <h1 class="content-title" th:text="${pageTitle ?: 'Mis Compras Realizadas'}">Mis Compras Realizadas</h1>
+
+        <div th:if="${errorAlCargarCompras}" class="message-area error-message mb-3">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span th:text="${errorAlCargarCompras}">Error cargando compras.</span>
+        </div>
+
+        <div class="content-card table-container">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>ID Compra</th>
+                    <th>Inmueble ID</th>
+                    <th>Título Inmueble</th>
+                    <th>Precio Pagado</th>
+                    <th>Fecha de Compra</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(compras)}">
+                    <td colspan="5" class="empty-message-cell">
+                        Aún no has realizado ninguna compra. ¡<a th:href="@{/ui/catalogo}" class="text-accent">Explora nuestro catálogo</a>!
+                    </td>
+                </tr>
+                <tr th:each="compra : ${compras}">
+                    <td th:text="${compra.id}">1</td>
+                    <td th:text="${compra.inmuebleId}">101</td>
+                    <td th:text="${compra.title}">Nombre del Inmueble Ejemplo</td>
+                    <td th:text="${#numbers.formatCurrency(compra.price)}">$0.00</td>
+                    <td th:text="${compra.purchaseDate != null ? #temporals.format(compra.purchaseDate, 'dd-MM-yyyy HH:mm') : 'Fecha no disponible'}">19-05-2025 10:30</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/header :: page_head(${pageTitle ?: 'Gestionar Inmuebles'}, 'inmuebles')}"></head>
+
+<body class="dashboard-body">
+
+<div th:replace="~{fragments/header :: navbar}"></div>
+
+<div class="dashboard-content-wrapper">
+
+    <div class="dashboard-layout-main">
+        <div th:replace="~{fragments/sidebar :: sidebar(activePage='inmuebles')}"></div>
+
+        <main class="content-area">
+            <h1 class="content-title" th:text="${pageTitle ?: 'Listado de Inmuebles'}">Listado de Inmuebles</h1>
+
+            <div th:if="${mensajeExito}" class="message-area success-message mb-3">
+                <i class="fas fa-check-circle"></i> <span th:text="${mensajeExito}"></span>
+            </div>
+            <div th:if="${mensajeError}" class="message-area error-message mb-3">
+                <i class="fas fa-exclamation-triangle"></i> <span th:text="${mensajeError}"></span>
+            </div>
+
+            <div class="mb-3">
+                <a th:href="@{/ui/inmuebles/nuevo}" class="button-accent">
+                    <i class="fas fa-plus-circle"></i> Añadir Nuevo Inmueble
+                </a>
+            </div>
+
+            <div th:if="${errorAlCargarInmuebles}" class="message-area error-message mb-3">
+                <p th:text="${errorAlCargarInmuebles}"></p>
+            </div>
+
+            <div class="content-card table-container">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Fecha Creación</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(inmuebles) AND isAdminView}">
+                        <td colspan="7" class="empty-message-cell">
+                            No hay inmuebles registrados en el sistema.
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(inmuebles) AND !isAdminView}">
+                        <td colspan="7" class="empty-message-cell">
+                            Aún no has publicado ningún inmueble. ¡Haz clic en "Añadir Nuevo Inmueble" para empezar!
+                        </td>
+                    </tr>
+
+                    <tr th:each="inmueble : ${inmuebles}">
+                        <td th:text="${inmueble.id}">1</td>
+                        <td th:text="${inmueble.name}">Nombre del Inmueble</td>
+                        <td th:text="${inmueble.address}">Dirección Completa</td>
+                        <td th:text="${#numbers.formatCurrency(inmueble.price)}">$150,000.00</td>
+                        <td>
+                                <span th:switch="${inmueble.estado}"
+                                      th:classappend="${inmueble.estado == 'DISPONIBLE' ? 'status-disponible' : (inmueble.estado == 'VENDIDO' ? 'status-vendido' : (inmueble.estado == 'RESERVADO' ? 'status-reservado' : 'status-desconocido'))}"
+                                      class="status-badge">
+                                    <span th:case="'DISPONIBLE'">Disponible</span>
+                                    <span th:case="'VENDIDO'">Vendido</span>
+                                    <span th:case="'RESERVADO'">Reservado</span>
+                                    <span th:case="*" th:text="${inmueble.estado != null ? inmueble.estado : 'Desconocido'}">Desconocido</span>
+                                </span>
+                        </td>
+                        <td th:text="${inmueble.creationDate != null ? #temporals.format(inmueble.creationDate, 'dd-MM-yyyy HH:mm') : 'N/A'}">01-01-2025 10:30</td>
+                        <td>
+                            <a th:href="@{'/ui/inmuebles/editar/' + ${inmueble.id}}" class="button-icon button-edit" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a th:href="@{'/ui/inmuebles/eliminar/' + ${inmueble.id}}" class="button-icon button-delete" title="Eliminar"
+                               th:onclick="'return confirm(\'¿Estás seguro de que deseas eliminar el inmueble \\'' + ${#strings.escapeJavaScript(inmueble.name)} + '\\'?\');'">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</div>
+</body>
+</html>

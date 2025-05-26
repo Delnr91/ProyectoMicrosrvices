@@ -1,0 +1,140 @@
+/* static/css/login.css */
+/* Utiliza variables globales definidas en style.css */
+
+body.login-page-body {
+    font-family: var(--font-main); /* Variable global de style.css */
+    background-image: url('../images/fondo.png'); /* Mismo fondo que el home */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: var(--space-padding-base); /* Variable global */
+    color: var(--color-text-primary);
+}
+
+.login-container {
+    background-color: rgba(35, 40, 48, 0.88); /* var(--color-surface-medium) con más opacidad o un rgba. Ajustar opacidad (0.88) */
+    padding: calc(var(--space-padding-base) * 1.8); /* Un poco menos padding que antes para que no sea tan grande */
+    border-radius: var(--size-border-radius);
+    border: 1px solid rgba(var(--color-border-subtle-rgb, 58, 63, 71), 0.4); /* Borde más sutil, define --color-border-subtle-rgb si es necesario */
+    width: 100%;
+    max-width: 400px; /* Ancho MÁXIMO para login. El de sign-up puede ser ligeramente mayor si es necesario. */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35); /* Sombra más pronunciada */
+    backdrop-filter: blur(10px); /* Efecto vidrio */
+}
+/* Si necesitas que el sign-up sea un poco más ancho por tener más campos: */
+/* Puedes añadir un ID o clase al body de sign-up y luego: */
+/* body.signup-page-body .login-container { max-width: 450px; } */
+
+
+.login-logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-logo { /* Para el logo2.png en login/sign-up */
+    max-width: 90px; /* Reducir un poco el logo en login/sign-up */
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login-container h2 { /* Para "Iniciar Sesión" o "Crear Nueva Cuenta" */
+    color: var(--color-accent);
+    text-align: center;
+    margin-bottom: calc(var(--space-margin-base) * 1.5);
+    font-family: var(--font-main);
+    font-size: 1.7em; /* Un poco más pequeño que el H1 del home */
+    font-weight: 600;
+}
+
+.login-form {
+    width: 100%;
+}
+
+.login-form .form-group {
+    margin-bottom: var(--space-margin-base);
+}
+
+.login-form label {
+    display: block;
+    color: var(--color-text-secondary);
+    margin-bottom: 6px; /* Menos espacio */
+    font-size: 0.85em; /* Etiqueta más pequeña */
+    font-weight: 500;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"],
+.login-form input[type="email"] {
+    width: 100%;
+    padding: 10px 14px; /* Ajustar padding */
+    margin-bottom: var(--space-margin-base);
+    background-color: rgba(var(--color-background-dark-rgb, 26, 30, 36), 0.75); /* Fondo de input semitransparente */
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--size-border-radius);
+    color: var(--color-text-primary);
+    font-family: var(--font-main);
+    font-size: 0.95em; /* Texto del input un poco más pequeño */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+/* En style.css, asegúrate de tener: --color-background-dark-rgb: 26, 30, 36; */
+
+
+.login-form input[type="text"]:focus,
+.login-form input[type="password"]:focus,
+.login-form input[type="email"]:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2.5px rgba(var(--color-accent-rgb), 0.25); /* Sombra de foco más sutil */
+}
+
+.login-form button[type="submit"] {
+    width: 100%;
+    padding: 11px; /* Ligeramente menos padding vertical */
+    background-color: var(--color-accent);
+    color: var(--color-text-on-accent);
+    border: none;
+    border-radius: var(--size-border-radius);
+    font-family: var(--font-main);
+    font-size: 1em; /* Botón un poco más pequeño */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.8px; /* Más espaciado de letras */
+    margin-top: 10px;
+}
+.login-form button[type="submit"]:hover {
+    background-color: var(--color-accent-darker);
+    transform: translateY(-1px);
+}
+.login-form button[type="submit"]:active {
+    transform: translateY(0px);
+}
+
+.alternative-action-link-container {
+    text-align: center;
+    margin-top: calc(var(--space-margin-base) * 1.3); /* Un poco menos de espacio */
+    font-size: 0.9em;
+}
+.alternative-action-link-container p {
+    color: var(--color-text-secondary);
+    margin-bottom: 0;
+}
+.alternative-action-link-container a {
+    color: var(--color-accent);
+    font-weight: 500; /* Menos bold que en el home */
+    text-decoration: none;
+}
+.alternative-action-link-container a:hover {
+    text-decoration: underline;
+    color: var(--color-accent-darker);
+}
+
+/* Los estilos de .message-area y sus variantes (success-message, error-message, info-message) */
+/* ya están definidos globalmente en style.css */

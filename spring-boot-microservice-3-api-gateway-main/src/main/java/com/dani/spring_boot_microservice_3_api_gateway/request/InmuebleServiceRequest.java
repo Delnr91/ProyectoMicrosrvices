@@ -14,7 +14,7 @@ import java.util.List;
         value = "inmueble-service", // Nombre del servicio registrado en Eureka
         path = "/api/inmueble",     // Path base en el servicio destino
         // url = "${inmueble.service.url}", // Descomentar si no se usa Eureka y se configura URL directa
-        configuration = FeignConfiguration.class // Configuración común (ej. Basic Auth)
+        configuration = PropagateUserFeignConfiguration.class // Configuración común (ej. Basic Auth)
 )
 public interface InmuebleServiceRequest {
 
@@ -29,4 +29,11 @@ public interface InmuebleServiceRequest {
     /** Llama al endpoint GET /api/inmueble del servicio de inmuebles. */
     @GetMapping()
     List<InmuebleDto> getAllInmuebles();
+
+    @GetMapping("/{inmuebleId}")
+    InmuebleDto getInmuebleById(@PathVariable("inmuebleId") Long inmuebleId);
+
+    @GetMapping("/user/{userId}") // Asegúrate de tener este para "Mis Inmuebles"
+    List<InmuebleDto> getAllInmueblesByUserId(@PathVariable("userId") Long userId);
+
 }

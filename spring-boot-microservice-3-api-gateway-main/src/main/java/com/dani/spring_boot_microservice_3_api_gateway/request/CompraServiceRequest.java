@@ -17,7 +17,7 @@ import java.util.List;
         value="compra-service", // Nombre del servicio en Eureka
         path="api/compra",      // Path base en el servicio destino
         // url="${compras.service.url}", // Descomentar si no se usa Eureka
-        configuration = FeignConfiguration.class // Configuración común (ej. Basic Auth)
+        configuration = PropagateUserFeignConfiguration.class // Configuración común (ej. Basic Auth)
 )
 public interface CompraServiceRequest {
 

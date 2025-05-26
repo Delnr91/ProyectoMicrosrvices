@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/header :: page_head(${pageTitle ?: (usuarioAEditar.id == null ? 'Crear Nuevo Usuario (Admin)' : 'Editar Usuario')}, 'usuarios')}"></head>
+
+<body class="dashboard-body">
+
+<div th:replace="~{fragments/header :: navbar}"></div>
+
+<div class="dashboard-content-wrapper">
+
+    <div class="dashboard-layout-main">
+        <div th:replace="~{fragments/sidebar :: sidebar(activePage='usuarios')}"></div>
+
+        <main class="content-area">
+            <h1 class="content-title" th:text="${pageTitle ?: (usuarioAEditar.id == null ? 'Crear Nuevo Usuario (Admin)' : 'Editar Usuario: ' + usuarioAEditar.username)}">Formulario de Usuario</h1>
+
+            <div class="content-card form-container-card">
+                <form th:action="@{/ui/admin/usuarios/actualizar}" th:object="${usuarioAEditar}" method="post" class="styled-form">
+                    <input type="hidden" th:field="*{id}" />
+                    <input type="hidden" th:field="*{username}" />
+                    <input type="hidden" th:field="*{fechaCreacion}" />
+                    <input type="hidden" th:field="*{password}" />
+
+                    <div class="form-group">
+                        <label for="username-display">Username (No editable):</label>
+                        <p id="username-display" class="form-control-static" th:text="*{username}"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo:</label>
+                        <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Nombre completo del usuario" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Rol:</label>
+                        <th:block th:if="${isPrincipalAdmin}">
+                            <p class="form-control-static" th:text="*{role}"></p>
+                            <input type="hidden" th:field="*{role}" />
+                            <small class="form-text text-muted">El rol del administrador principal no se puede cambiar.</small>
+                        </th:block>
+                        <th:block th:unless="${isPrincipalAdmin}">
+                            <select id="role" th:field="*{role}" class="form-control" required>
+                                <option th:each="rolOpt : ${todosLosRoles}"
+                                        th:value="${rolOpt}"
+                                        th:text="${rolOpt.name()}">USER</option>
+                            </select>
+                        </th:block>
+                    </div>
+
+                    <div class="form-group form-group-readonly">
+                        <label>Fecha de Creación:</label>
+                        <p th:text="*{fechaCreacion != null ? #temporals.format(fechaCreacion, 'dd-MM-yyyy HH:mm:ss') : 'N/A'}"></p>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="button-accent">
+                            <i class="fas fa-save"></i> Actualizar Usuario
+                        </button>
+                        <a th:href="@{/ui/admin/usuarios}" class="button-secondary">
+                            <i class="fas fa-times-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</div>
+</body>
+</html>

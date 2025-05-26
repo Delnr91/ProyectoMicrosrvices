@@ -2,6 +2,7 @@ package com.dani.spring_boot_microservice_2_compra;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 // import org.springframework.cloud.client.discovery.EnableDiscoveryClient; // Opcional con versiones recientes de Spring Cloud
 
 /**
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Punto de entrada que inicia la aplicación.
  */
 @SpringBootApplication
+@EnableFeignClients
 // @EnableDiscoveryClient // Opcional si Eureka está en el classpath con SB recientes.
 public class SpringBootMicroservice2CompraApplication {
 

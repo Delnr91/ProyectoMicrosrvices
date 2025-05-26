@@ -2,6 +2,7 @@ package com.dani.spring_boot_microservice_3_api_gateway.service;
 
 import com.dani.spring_boot_microservice_3_api_gateway.model.Role;
 import com.dani.spring_boot_microservice_3_api_gateway.model.User;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -40,4 +41,29 @@ public interface UserService {
      * @throws org.springframework.security.core.userdetails.UsernameNotFoundException si el usuario no existe.
      */
     User findByUserameReturnToken(String username);
+
+    // --- NUEVOS MÉTODOS PARA GESTIÓN DE ADMIN ---
+    List<User> findAllUsers();
+
+    Optional<User> findUserById(Long id);
+
+    /**
+     * Actualiza los datos de un usuario, llamado por un administrador.
+     * Incluye lógica para el límite de admins y protección del admin principal.
+     * @param userId El ID del usuario a actualizar.
+     * @param userUpdateRequest Objeto User con los datos a actualizar (ej. nombre, nuevo rol).
+     * @param currentAdminUsername El username del administrador que realiza la operación.
+     * @return El usuario actualizado.
+     * @throws RuntimeException Si se violan las reglas de negocio (límite de admin, intento de modificar admin principal).
+     */
+    User updateUserByAdmin(Long userId, User userUpdateRequest, String currentAdminUsername);
+
+    /**
+     * Elimina un usuario, llamado por un administrador.
+     * Incluye protección para no eliminar al admin principal.
+     * @param userIdToDelete El ID del usuario a eliminar.
+     * @param currentAdminUsername El username del administrador que realiza la operación.
+     * @throws RuntimeException Si se intenta eliminar al admin principal o el usuario no existe.
+     */
+    void deleteUserByAdmin(Long userIdToDelete, String currentAdminUsername);
 }

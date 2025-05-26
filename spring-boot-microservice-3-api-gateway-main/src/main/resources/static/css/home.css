@@ -1,0 +1,257 @@
+/* static/css/home.css */
+/* Este archivo utiliza variables globales definidas en style.css */
+
+/* La definición :root local ya no es necesaria aquí, las variables se toman de style.css */
+
+html, body.home-page-body {
+    /* font-family es var(--font-main) y viene de style.css */
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body.home-page-body {
+    background-image: url('../images/fondo.png'); /* Tu imagen de fondo */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /* display: flex, flex-direction, min-height ya vienen de style.css */
+    color: var(--color-text-primary); /* Color de texto principal para el home */
+}
+
+/* Navbar Superior Específico para Home */
+.home-navbar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background-color: rgba(26, 30, 36, 0.5); /* Mantenemos el estilo específico que te gustó */
+    backdrop-filter: blur(5px);
+    width: 100%;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    /* Considera un borde sutil si es necesario para separarlo del contenido al hacer scroll */
+    /* border-bottom: 1px solid rgba(var(--color-border-subtle), 0.3); */
+}
+
+.navbar-logo-img { /* Estilo para el logo en el navbar del home (si lo usaras) */
+    height: 35px;
+    width: auto;
+}
+
+.navbar-links-top {
+    display: flex;
+    align-items: center;
+}
+
+.nav-action-link {
+    color: var(--color-text-secondary); /* Usando variable global */
+    text-decoration: none;
+    margin-left: 20px;
+    padding: 8px 12px;
+    border-radius: var(--size-border-radius); /* Variable global */
+    font-weight: 500;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    border: 1px solid transparent;
+    background: none; /* Importante para que no tengan fondo por defecto */
+    cursor: pointer; /* Para los botones que son <a> */
+}
+.nav-action-link.login-button {
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+}
+.nav-action-link.login-button:hover {
+    background-color: var(--color-accent);
+    color: var(--color-text-on-accent); /* Variable global */
+}
+/* Hover para enlaces que no son botones especiales */
+.nav-action-link:not(.login-button):not(.dashboard-button):not(.logout-button):hover {
+    color: var(--color-accent);
+}
+
+.nav-action-link.dashboard-button { /* Botón "Mi Panel" */
+    background-color: var(--color-accent);
+    color: var(--color-text-on-accent);
+    font-weight: bold; /* Mantenido de tu CSS original */
+}
+.nav-action-link.dashboard-button:hover {
+    background-color: var(--color-accent-darker); /* Variable global */
+}
+
+/* Ajuste para el botón de logout que es un <button> dentro de un form */
+button.logout-button.nav-action-link {
+    /* Hereda estilos de .nav-action-link si se añade esa clase al botón en el HTML */
+    /* Estilos específicos para el botón de logout */
+    border: 1px solid var(--color-text-secondary); /* Usar variable global */
+    color: var(--color-text-secondary);
+}
+button.logout-button.nav-action-link:hover {
+    background-color: rgba(var(--color-danger-text), 0.8); /* Usando var global para rojo */
+    border-color: var(--color-danger-text);
+    color: var(--color-text-primary);
+}
+
+
+/* Contenido Principal Hero */
+.hero-container-main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 70px; /* Ajustar según altura del navbar */
+    padding-bottom: 50px;
+    text-align: center;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.hero-content-centered {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+
+}
+
+.hero-logo-center {
+    width: 120px;
+    height: auto;
+    margin-bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-brand-name { /* "Dani Dev" */
+    font-size: 4em;
+    font-weight: 700;
+    color: var(--color-text-primary); /* Variable global */
+    margin: 0;
+    line-height: 1;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2); /* Mantenido de tu CSS original */
+}
+
+.hero-brand-tagline { /* "Full Stack Software" */
+    font-size: 1.5em;
+    color: var(--color-accent); /* Variable global */
+    margin-top: 0px;
+    margin-bottom: 30px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.hero-main-title { /* "Encuentra la Casa de Tus Sueños" */
+    font-size: 2.2em;
+    font-weight: 600;
+    color: var(--color-text-primary); /* Variable global */
+    margin-bottom: 8px;
+}
+
+.hero-main-subtitle { /* "Descubre propiedades..." */
+    font-size: 1.1em;
+    color: var(--color-text-secondary); /* Variable global */
+    margin-bottom: 30px;
+    line-height: 1.5;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.hero-btn {
+    padding: 10px 25px;
+    border-radius: var(--size-border-radius); /* Variable global */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+    transition: all 0.3s ease; /* Mantenido de tu CSS original */
+    min-width: 150px;
+    box-sizing: border-box;
+}
+
+.hero-btn.primary {
+    background-color: var(--color-accent);
+    color: var(--color-text-on-accent); /* Variable global */
+}
+.hero-btn.primary:hover {
+    background-color: var(--color-accent-darker); /* Variable global, #b8e600 */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Mantenido de tu CSS original */
+}
+
+.hero-btn.secondary { /* Para el botón de login del hero, si existiera */
+    background-color: transparent;
+    color: var(--color-accent);
+    border: 2px solid var(--color-accent);
+}
+.hero-btn.secondary:hover {
+    background-color: var(--color-accent);
+    color: var(--color-text-on-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Footer */
+.home-footer {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(20, 23, 28, 0.7); /* Mantenido de tu CSS original */
+    backdrop-filter: blur(5px); /* Mantenido de tu CSS original */
+    color: var(--color-text-secondary); /* Usar color secundario para el texto del footer */
+    font-size: 0.85em;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 3;
+    border-top: 1px solid var(--color-border-subtle); /* Variable global */
+}
+.home-footer p {
+    margin: 5px 0;
+}
+.footer-link {
+    color: var(--color-accent); /* Variable global */
+}
+.footer-link:hover {
+    text-decoration: underline;
+}
+
+/* Media Queries (Mantenidas de tu CSS original) */
+@media (max-width: 768px) {
+    .home-navbar-top {
+        padding: 10px 3%;
+        flex-direction: column;
+        height: auto;
+    }
+    .navbar-brand-top { /* Si el navbar-brand-top contuviera el logo */
+        margin-bottom: 10px;
+    }
+    .navbar-links-top {
+        justify-content: center;
+        width: 100%;
+    }
+    .nav-action-link, button.logout-button.nav-action-link { /* Agrupado para consistencia */
+        margin-left: 10px;
+        margin-right: 10px;
+        font-size: 0.85em;
+        padding: 6px 10px;
+    }
+    /* button.logout-button (eliminado porque se agrupa con .nav-action-link arriba si se aplica la clase) */
+
+    .hero-content-centered { padding: 20px; }
+    .hero-brand-name { font-size: 3em; }
+    .hero-brand-tagline { font-size: 1.2em; margin-bottom: 20px; }
+    .hero-main-title { font-size: 1.8em; }
+    .hero-main-subtitle { font-size: 1em; }
+
+    .hero-buttons-container { flex-direction: column; gap: 15px; align-items: center; }
+    .hero-btn { width: 90%; max-width: 300px; padding: 12px 20px; }
+    .hero-container-main { padding-top: 120px; } /* Ajustar según la altura final del navbar en móvil */
+}
