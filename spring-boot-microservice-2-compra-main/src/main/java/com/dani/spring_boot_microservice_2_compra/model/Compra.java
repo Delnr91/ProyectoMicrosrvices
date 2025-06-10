@@ -1,82 +1,77 @@
 package com.dani.spring_boot_microservice_2_compra.model;
 
-// Imports de Lombok para generar código boilerplate.
-import lombok.*; // Importa Data, AllArgsConstructor, NoArgsConstructor, Getter, Setter
+import jakarta.persistence.*;
+import lombok.Data;
 
-// Imports de Jakarta Persistence API (JPA) actualizados.
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-
-import java.time.LocalDateTime; // Para manejar fechas y horas.
+import java.time.LocalDateTime;
 
 /**
- * Representa una compra realizada por un usuario sobre un inmueble.
- * Esta entidad almacena la información de la transacción de compra.
- * Mapeada a la tabla 'compra' en la base de datos.
+ * Entidad JPA que representa una transacción de compra en el sistema.
+ * <p>
+ * Esta clase es el objeto de dominio principal para el {@code compra-service}.
+ * Almacena el registro de qué usuario compró qué inmueble, a qué precio y cuándo.
+ * Está mapeada a la tabla "compras" en la base de datos PostgreSQL.
  *
- * @author TuNombre (o el autor original)
+ * @author Daniel Núñez Rojas (danidev fullstack software)
  * @version 1.0
- * @since 2025-05-04 (Fecha de creación o última modificación)
+ * @since 2025-05-13
  */
-@Entity // Marca esta clase como una entidad JPA.
-@Table(name="compra") // Especifica el nombre de la tabla en la BD.
-// Anotaciones Lombok:
-@Data // Genera getters, setters, toString, equals, hashCode.
-@AllArgsConstructor // Genera un constructor con todos los argumentos.
-@NoArgsConstructor // Genera un constructor sin argumentos (requerido por JPA).
-// @Getter y @Setter son redundantes si se usa @Data, pero se dejan si estaban antes.
-// @Getter
-// @Setter
+@Entity
+@Table(name = "compras")
+@Data
 public class Compra {
 
     /**
-     * Identificador único de la compra (clave primaria).
-     * Generado automáticamente por la base de datos (estrategia IDENTITY).
+     * Identificador único de la transacción de compra, generado automáticamente.
+     * Es la clave primaria de la tabla {@code compras}.
+     * Se utiliza la estrategia de generación {@link GenerationType#IDENTITY}.
      */
-    @Id // Marca como clave primaria.
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Estrategia de generación de ID.
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
-     * ID del usuario que realizó la compra.
-     * Este campo vincula la compra con un usuario (posiblemente de otro microservicio o tabla).
-     * Mapeado a la columna 'user_id'.
+     * Identificador del usuario que realizó la compra.
+     * Este ID corresponde al ID del usuario en el sistema API Gateway.
+     * Este campo es obligatorio.
+     * Mapeado a la columna {@code user_id}.
      */
-    @Column(name="user_id", nullable = false) // Columna 'user_id', no puede ser nulo.
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     /**
-     * ID del inmueble que fue comprado.
-     * Este campo vincula la compra con un inmueble (posiblemente del microservicio inmueble-service).
-     * Mapeado a la columna 'inmueble_id'.
+     * Identificador del inmueble que fue comprado.
+     * Este ID corresponde al ID del inmueble en el {@code inmueble-service}.
+     * Este campo es obligatorio.
+     * Mapeado a la columna {@code inmueble_id}.
      */
-    @Column(name="inmueble_id", nullable = false) // Columna 'inmueble_id', no puede ser nulo.
+    @Column(name = "inmueble_id", nullable = false)
     private Long inmuebleId;
 
     /**
-     * Título o descripción breve de la compra/inmueble en el momento de la compra.
-     * Mapeado a la columna 'titulo'.
+     * Título o nombre del inmueble en el momento de la compra.
+     * Se almacena aquí para mantener un registro histórico, incluso si el
+     * nombre del inmueble original cambia posteriormente.
+     * Este campo es obligatorio.
+     * Mapeado a la columna {@code titulo}.
      */
-    @Column(name="titulo", length = 255) // Columna 'titulo'.
+    @Column(name = "titulo", nullable = false)
     private String title;
 
     /**
-     * Precio al que se realizó la compra.
-     * Mapeado a la columna 'precio'.
+     * Precio final al que se realizó la compra.
+     * Se almacena aquí para mantener un registro histórico del precio de la transacción.
+     * Este campo es obligatorio.
+     * Mapeado a la columna {@code precio}.
      */
-    @Column(name="precio", nullable = false) // Columna 'precio', no puede ser nulo.
+    @Column(name = "precio", nullable = false)
     private Double price;
 
     /**
      * Fecha y hora exactas en que se registró la compra.
-     * Se asigna automáticamente en la capa de servicio al guardar.
-     * Mapeado a la columna 'fecha_compra'.
+     * Este campo se asigna automáticamente al momento de la creación de la compra.
+     * Mapeado a la columna {@code fecha_compra}.
      */
-    @Column(name="fecha_compra") // Columna 'fecha_compra'.
+    @Column(name = "fecha_compra", nullable = false)
     private LocalDateTime purchaseDate;
-
 }

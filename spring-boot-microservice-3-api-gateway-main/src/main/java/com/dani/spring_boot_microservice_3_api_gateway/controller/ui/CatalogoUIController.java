@@ -1,23 +1,21 @@
 package com.dani.spring_boot_microservice_3_api_gateway.controller.ui;
 
-import com.dani.spring_boot_microservice_3_api_gateway.dto.InmuebleDto;
-import com.dani.spring_boot_microservice_3_api_gateway.model.User;
 import com.dani.spring_boot_microservice_3_api_gateway.request.InmuebleServiceRequest;
-import com.dani.spring_boot_microservice_3_api_gateway.security.UserPrincipal;
-import com.dani.spring_boot_microservice_3_api_gateway.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable; // Asegúrate de que este import esté
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes; // Para mensajes si no se encuentra
 
-import java.util.Collections;
-import java.util.List;
-
+/**
+ * Controlador para la interfaz de usuario (UI) del catálogo público de inmuebles.
+ *
+ * @author Daniel Núñez Rojas (danidev fullstack software)
+ * @version 1.0
+ * @since 2025-05-21
+ */
 @Controller
 @RequestMapping("/ui/catalogo")
 @RequiredArgsConstructor
@@ -25,66 +23,39 @@ import java.util.List;
 public class CatalogoUIController {
 
     private final InmuebleServiceRequest inmuebleServiceRequest;
-    private final UserService userService;
 
-    private void addUserToModel(UserPrincipal principal, Model model) {
-        if (principal != null) {
-            User currentUser = userService.findByUserameReturnToken(principal.getUsername());
-            model.addAttribute("currentUser", currentUser);
-        }
-    }
-
+    /**
+     * Muestra la página principal del catálogo con la lista de todos los inmuebles.
+     *
+     * @param model El objeto {@link Model} para pasar la lista de inmuebles a la vista.
+     * @return El nombre de la vista Thymeleaf ({@code "catalogo/vista-catalogo"}).
+     */
     @GetMapping
-    public String mostrarCatalogo(Model model, @AuthenticationPrincipal UserPrincipal principal) {
-        if (principal != null) {
-            addUserToModel(principal, model);
-        }
-        log.info("Accediendo a la página del catálogo de inmuebles.");
+    public String mostrarCatalogo(Model model) {
         try {
-            List<InmuebleDto> todosLosInmuebles = inmuebleServiceRequest.getAllInmuebles();
-            model.addAttribute("inmuebles", todosLosInmuebles);
+            model.addAttribute("inmuebles", inmuebleServiceRequest.getAllInmuebles());
         } catch (Exception e) {
-            log.error("Error al cargar todos los inmuebles para el catálogo: {}", e.getMessage(), e);
-            model.addAttribute("errorAlCargarInmuebles", "No se pudieron cargar los inmuebles en este momento.");
-            model.addAttribute("inmuebles", Collections.emptyList());
+            log.error("Error al cargar el catálogo de inmuebles: {}", e.getMessage());
+            model.addAttribute("error", "No se pudo cargar el catálogo de inmuebles en este momento.");
         }
-        model.addAttribute("pageTitle", "Catálogo de Inmuebles");
-        model.addAttribute("activePage", "catalogo");
         return "catalogo/vista-catalogo";
     }
 
-    // NUEVO MÉTODO PARA VER DETALLES
-    @GetMapping("/detalle/{inmuebleId}")
-    public String mostrarDetalleInmueble(@PathVariable Long inmuebleId, Model model,
-                                         @AuthenticationPrincipal UserPrincipal principal,
-                                         RedirectAttributes redirectAttributes) {
-        if (principal != null) {
-            addUserToModel(principal, model); // Para el header
-        }
-        log.info("Accediendo a la página de detalle del inmueble ID: {}", inmuebleId);
-
+    /**
+     * Muestra la página de detalle para un inmueble específico.
+     *
+     * @param inmuebleId El ID del inmueble a mostrar.
+     * @param model El objeto {@link Model} para pasar los datos del inmueble a la vista.
+     * @return El nombre de la vista Thymeleaf ({@code "catalogo/detalle-inmueble"}).
+     */
+    @GetMapping("/detalle/{id}")
+    public String verDetalleInmueble(@PathVariable("id") Long inmuebleId, Model model) {
         try {
-            InmuebleDto inmueble = inmuebleServiceRequest.getInmuebleById(inmuebleId);
-
-            if (inmueble == null) {
-                log.warn("Inmueble con ID {} no encontrado (null devuelto)", inmuebleId);
-                redirectAttributes.addFlashAttribute("mensajeErrorCatalogo", "Inmueble con ID " + inmuebleId + " no encontrado.");
-                return "redirect:/ui/catalogo";
-            }
-
-            model.addAttribute("inmueble", inmueble);
-            model.addAttribute("pageTitle", "Detalle: " + (inmueble.name() != null ? inmueble.name() : "Inmueble"));
-            model.addAttribute("activePage", "catalogo");
-            return "catalogo/detalle-inmueble";
-
-        } catch (feign.FeignException.NotFound e) {
-            log.warn("Inmueble no encontrado (Feign 404) con ID: {} al intentar ver detalles: {}", inmuebleId, e.getMessage());
-            redirectAttributes.addFlashAttribute("mensajeErrorCatalogo", "Inmueble con ID " + inmuebleId + " no encontrado.");
-            return "redirect:/ui/catalogo";
+            model.addAttribute("inmueble", inmuebleServiceRequest.getInmuebleById(inmuebleId));
         } catch (Exception e) {
-            log.error("Error al cargar detalle del inmueble ID {}: {}", inmuebleId, e.getMessage(), e);
-            redirectAttributes.addFlashAttribute("mensajeErrorCatalogo", "Error al cargar los detalles del inmueble. Intente más tarde.");
-            return "redirect:/ui/catalogo";
+            log.error("Error al obtener detalle del inmueble ID {}: {}", inmuebleId, e.getMessage());
+            return "redirect:/ui/catalogo?error=notfound";
         }
+        return "catalogo/detalle-inmueble";
     }
 }

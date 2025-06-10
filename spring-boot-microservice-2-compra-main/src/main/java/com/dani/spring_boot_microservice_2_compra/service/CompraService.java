@@ -1,29 +1,37 @@
 package com.dani.spring_boot_microservice_2_compra.service;
 
 import com.dani.spring_boot_microservice_2_compra.model.Compra;
+
 import java.util.List;
 
 /**
- * Define el contrato para las operaciones de negocio relacionadas con las compras.
- * Abstrae la lógica de negocio de la capa de controlador y persistencia para las compras.
+ * Interfaz que define el contrato para las operaciones de negocio
+ * relacionadas con las compras en el sistema.
+ *
+ * @author Daniel Núñez Rojas (danidev fullstack software)
+ * @version 1.0
+ * @since 2025-05-13
  */
 public interface CompraService {
 
     /**
-     * Registra una nueva compra en el sistema.
-     * Asigna la fecha de compra antes de persistir.
+     * Guarda una nueva transacción de compra en la base de datos.
+     * <p>
+     * Además de guardar el registro de la compra, esta operación es responsable de
+     * coordinar con otros servicios si es necesario (por ejemplo, para actualizar
+     * el estado del inmueble comprado en el {@code inmueble-service}).
      *
-     * @param compra El objeto Compra con los detalles a guardar.
-     * @return La compra guardada (con ID asignado y fecha de compra).
+     * @param compra El objeto {@link Compra} a guardar. Se espera que el ID sea nulo.
+     * @return El objeto {@link Compra} guardado, ahora con el ID y la fecha de compra asignados.
      */
     Compra saveCompra(Compra compra);
 
     /**
-     * Recupera todas las compras asociadas a un ID de usuario específico.
+     * Devuelve una lista de todas las compras realizadas por un usuario específico.
      *
-     * @param userId El ID del usuario cuyas compras se desean buscar.
-     * @return Una lista de objetos Compra realizadas por el usuario;
-     * puede estar vacía si el usuario no tiene compras.
+     * @param userId El ID del usuario cuyas compras se desean recuperar.
+     * @return Una {@link List} de objetos {@link Compra} pertenecientes al usuario,
+     * o una lista vacía si no ha realizado compras.
      */
-    List<Compra> findAllComprasOfUser(Long userId);
+    List<Compra> findAllByUserId(Long userId);
 }

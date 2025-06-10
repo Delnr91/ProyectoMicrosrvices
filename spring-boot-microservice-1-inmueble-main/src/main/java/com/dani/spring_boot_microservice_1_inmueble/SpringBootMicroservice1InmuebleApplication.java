@@ -2,20 +2,30 @@ package com.dani.spring_boot_microservice_1_inmueble;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-// import org.springframework.cloud.client.discovery.EnableDiscoveryClient; // Alternativa a @EnableEurekaClient si usas otras impl.
 
 /**
- * Clase principal de la aplicación Spring Boot para el microservicio Inmueble.
- * Habilita la autoconfiguración de Spring Boot y el descubrimiento de servicios (Eureka).
+ * Clase principal y punto de entrada para el microservicio de Inmuebles.
+ * <p>
+ * Esta clase utiliza la anotación {@link SpringBootApplication}, que engloba
+ * las anotaciones estándar de Spring Boot para la auto-configuración, el escaneo
+ * de componentes y la configuración.
+ * <p>
+ * El microservicio se registra en Eureka (según la configuración en {@code application.properties})
+ * para que otros servicios, como el API Gateway, puedan descubrirlo y comunicarse con él.
+ *
+ * @author Daniel Núñez Rojas (danidev fullstack software)
+ * @version 1.0
+ * @since 2025-05-13
  */
 @SpringBootApplication
-// @EnableDiscoveryClient // Opcional: Si usas Eureka, @SpringBootApplication puede ser suficiente en versiones recientes.
-// Dejarlo no hace daño y es explícito. O puedes quitarlo si funciona sin él.
 public class SpringBootMicroservice1InmuebleApplication {
 
 	/**
-	 * Punto de entrada principal para la aplicación Spring Boot.
-	 * @param args Argumentos de línea de comandos (si los hubiera).
+	 * Punto de entrada principal de la aplicación.
+	 * Este método utiliza {@link SpringApplication#run(Class, String...)} para lanzar
+	 * la aplicación Spring Boot.
+	 *
+	 * @param args Argumentos de línea de comandos pasados al iniciar la aplicación.
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootMicroservice1InmuebleApplication.class, args);

@@ -3,42 +3,59 @@ package com.dani.spring_boot_microservice_1_inmueble.security;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer; // Importado para httpBasic(Customizer.withDefaults())
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer; // Importado para csrf(AbstractHttpConfigurer::disable)
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder; // Importar PasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Configuración de Seguridad para el microservicio de Inmuebles.
- * Habilita la seguridad web y define las reglas de autenticación y autorización.
- * Utiliza autenticación en memoria y Basic Auth para proteger los endpoints.
+ * Clase de configuración para Spring Security en el microservicio de Inmuebles.
+ * <p>
+ * Al igual que en el {@code compra-service}, esta configuración define la política de
+ * seguridad para un servicio interno que es consumido por otros servicios
+ * (principalmente el API Gateway y el compra-service). No maneja usuarios finales
+ * directamente, sino que asegura la comunicación de servicio a servicio.
+ * <p>
+ * Configura:
+ * <ul>
+ * <li>Una política de seguridad stateless.</li>
+ * <li>Autenticación Básica (Basic Auth) para todas las peticiones a la API.</li>
+ * <li>Dos usuarios en memoria para validar las credenciales de Basic Auth. Esto permite
+ * que tanto el API Gateway como el compra-service se autentiquen con credenciales diferentes
+ * si fuera necesario, mejorando la granularidad de la seguridad.</li>
+ * <li>Desactivación de CSRF.</li>
+ * </ul>
+ *
+ * @author Daniel Núñez Rojas (danidev fullstack software)
+ * @version 1.0
+ * @since 2025-05-18
  */
-@Configuration // Indica que esta clase contiene configuraciones de beans de Spring.
-@EnableWebSecurity // Habilita la integración de Spring Security con Spring MVC.
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
-    // Inyecta valores desde application.properties para las credenciales de seguridad.
+    // Credenciales para el primer usuario de servicio (ej. API Gateway)
     @Value("${service.security.secure-key-username}")
     private String SECURE_KEY_USERNAME;
     @Value("${service.security.secure-key-password}")
     private String SECURE_KEY_PASSWORD;
+
+    // Credenciales para el segundo usuario de servicio (ej. compra-service)
     @Value("${service.security.secure-key-username-2}")
     private String SECURE_KEY_USERNAME_2;
     @Value("${service.security.secure-key-password-2}")
     private String SECURE_KEY_PASSWORD_2;
 
     /**
-     * Bean que define el codificador de contraseñas a utilizar.
-     * BCrypt es el estándar recomendado actualmente.
-     *
-     * @return Una instancia de BCryptPasswordEncoder.
+     * Define y expone el {@link PasswordEncoder} como un bean.
+     * @return una instancia de {@link BCryptPasswordEncoder}.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -46,66 +63,48 @@ public class SecurityConfig {
     }
 
     /**
-     * Configura la cadena de filtros de seguridad principal.
-     * Define cómo se manejan la autenticación y la autorización para las peticiones HTTP.
+     * Configura un {@link UserDetailsService} con dos usuarios de servicio en memoria.
+     * <p>
+     * Estos usuarios son utilizados por otros microservicios para autenticarse con
+     * este servicio a través de Autenticación Básica.
      *
-     * @param http El objeto HttpSecurity para configurar la seguridad web.
-     * @param passwordEncoder El codificador de contraseñas inyectado.
-     * @return La cadena de filtros de seguridad configurada.
-     * @throws Exception Si ocurre un error durante la configuración.
+     * @param passwordEncoder el codificador para hashear las contraseñas de los usuarios en memoria.
+     * @return un {@link UserDetailsService} configurado con los usuarios de servicio.
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
-        // Obtiene el constructor del AuthenticationManager para configurar usuarios en memoria.
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(
-                AuthenticationManagerBuilder.class);
+    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails user = User.withUsername(SECURE_KEY_USERNAME)
+                .password(passwordEncoder.encode(SECURE_KEY_PASSWORD))
+                .roles("USER")
+                .build();
 
-        // Configura usuarios en memoria con roles y contraseñas codificadas.
-        authenticationManagerBuilder.inMemoryAuthentication()
-                .withUser(SECURE_KEY_USERNAME)
-                .password(passwordEncoder.encode(SECURE_KEY_PASSWORD)) // Usa el PasswordEncoder del bean
-                .authorities(AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN"))
-                .and()
-                .withUser(SECURE_KEY_USERNAME_2)
-                .password(passwordEncoder.encode(SECURE_KEY_PASSWORD_2)) // Usa el PasswordEncoder del bean
-                .authorities(AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_DEV"))
-                .and()
-                // El passwordEncoder ya está asociado a través del bean, no es necesario aquí explícitamente
-                // si se configura globalmente como hicimos, pero se puede dejar por claridad.
-                .passwordEncoder(passwordEncoder);
-
-
-        // Configuración de las reglas de autorización HTTP.
-        // NOTA: Se usa securityMatcher en lugar del antiguo antMatcher a nivel de HttpSecurity.
-        // NOTA: Se usa authorizeHttpRequests en lugar del antiguo authorizeRequests.
-        // NOTA: Se usa la expresión lambda para configurar CSRF y HTTP Basic.
-        http
-                .securityMatcher("/**") // Aplica esta configuración a todas las rutas.
-                .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().hasRole("ADMIN") // Requiere rol ADMIN para cualquier petición.
-                )
-                .csrf(AbstractHttpConfigurer::disable) // Deshabilita CSRF (común en APIs stateless).
-                .httpBasic(Customizer.withDefaults()); // Habilita autenticación HTTP Basic con configuración por defecto.
-
-        // Construye y retorna la cadena de filtros de seguridad.
-        return http.build();
+        UserDetails user2 = User.withUsername(SECURE_KEY_USERNAME_2)
+                .password(passwordEncoder.encode(SECURE_KEY_PASSWORD_2))
+                .roles("USER")
+                .build();
+        return new InMemoryUserDetailsManager(user, user2);
     }
 
     /**
-     * Configura las reglas de CORS (Cross-Origin Resource Sharing) para la aplicación.
-     * Permite peticiones desde cualquier origen ("*").
+     * Define la cadena de filtros de seguridad principal para el microservicio de inmuebles.
+     * <p>
+     * Configura la seguridad para que todas las peticiones a {@code /api/**}
+     * requieran autenticación y utilicen Autenticación Básica (HTTP Basic).
      *
-     * @return Un configurador WebMvcConfigurer con las reglas CORS.
+     * @param http El objeto {@link HttpSecurity} para configurar la seguridad web.
+     * @return La cadena de filtros de seguridad configurada.
+     * @throws Exception si ocurre un error durante la configuración.
      */
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                // Permite el acceso desde cualquier origen a todos los endpoints ("/**").
-                registry.addMapping("/**").allowedOrigins("*");
-                // NOTA: En producción, es recomendable restringir allowedOrigins a dominios específicos.
-            }
-        };
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http.csrf((csrf) -> csrf.disable())
+                .authorizeHttpRequests(authRequest ->
+                        authRequest.requestMatchers("/api/**").authenticated()
+                                .anyRequest().permitAll()
+                )
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(Customizer.withDefaults())
+                .build();
     }
 }

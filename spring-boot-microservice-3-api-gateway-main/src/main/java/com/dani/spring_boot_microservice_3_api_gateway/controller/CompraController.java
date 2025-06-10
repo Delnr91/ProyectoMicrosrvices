@@ -1,74 +1,75 @@
-// En: ProyectoMicrosrvices/spring-boot-microservice-3-api-gateway-main/src/main/java/com/dani/spring_boot_microservice_3_api_gateway/controller/CompraController.java
 package com.dani.spring_boot_microservice_3_api_gateway.controller;
 
 import com.dani.spring_boot_microservice_3_api_gateway.dto.CompraDto;
 import com.dani.spring_boot_microservice_3_api_gateway.request.CompraServiceRequest;
 import com.dani.spring_boot_microservice_3_api_gateway.security.UserPrincipal;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // Añadir para logging
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller; // Cambiar a @Controller si va a redirigir
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.net.URI; // Para la redirección
 import java.util.List;
 
-@Controller // CAMBIADO de @RestController a @Controller para permitir redirecciones y flash attributes
-@RequestMapping("gateway/compra") // Mantenemos el prefijo para la API
+/**
+ * Controlador que gestiona las operaciones relacionadas con las compras,
+ * actuando como un proxy hacia el microservicio de compras.
+ * <p>
+ * Este controlador es un {@link Controller} estándar de Spring MVC, no un {@link RestController},
+ * ya que maneja tanto peticiones de API que devuelven JSON como peticiones de formularios
+ * Thymeleaf que resultan en redirecciones.
+ *
+ * @author Daniel Núñez Rojas (danidev fullstack software)
+ * @version 1.1
+ * @since 2025-06-05 (Actualizado con JavaDoc completo)
+ */
+@Controller
+@RequestMapping("gateway/compra")
 @RequiredArgsConstructor
-@Tag(name = "Gateway - Compras", description = "Proxy para operaciones de Compras.")
-@SecurityRequirement(name = "bearerAuth")
-@Slf4j // AÑADIDO
+@Slf4j
 public class CompraController {
 
     private final CompraServiceRequest compraServiceRequest;
 
     /**
-     * Endpoint Gateway para registrar una nueva compra.
-     * Este método está diseñado para ser llamado desde un formulario Thymeleaf.
-     * Recibe los datos de la compra como parámetros, añade el ID del usuario autenticado,
-     * y llama al servicio de compras. Luego redirige al catálogo con un mensaje.
+     * Procesa una solicitud de compra proveniente de un formulario de la UI (Thymeleaf).
+     * <p>
+     * Construye un {@link CompraDto} y lo envía al servicio de compras a través del
+     * cliente Feign. Maneja los resultados para mostrar mensajes de éxito o error
+     * al usuario a través de {@link RedirectAttributes}.
      *
-     * @param inmuebleId ID del inmueble a comprar.
-     * @param title Título del inmueble.
-     * @param price Precio del inmueble.
-     * @param principal El UserPrincipal del usuario autenticado.
-     * @param redirectAttributes Para enviar mensajes flash a la vista de redirección.
-     * @return Una cadena de redirección (String) a la página del catálogo.
+     * @param inmuebleId El ID del inmueble que se está comprando.
+     * @param title El título del inmueble.
+     * @param price El precio del inmueble.
+     * @param principal El objeto {@link UserPrincipal} del usuario autenticado que realiza la compra.
+     * @param redirectAttributes Utilizado para pasar mensajes flash a la vista después de la redirección.
+     * @return Una cadena de texto que indica la redirección a la página del catálogo.
      */
-    @PostMapping // Este endpoint será llamado por el formulario de la UI
-    public String saveCompraFromUI( // Nombre del método cambiado para claridad
-                                    @RequestParam("inmuebleId") Long inmuebleId,
-                                    @RequestParam("title") String title,
-                                    @RequestParam("price") Double price,
-                                    @AuthenticationPrincipal UserPrincipal principal,
-                                    RedirectAttributes redirectAttributes) {
+    @PostMapping
+    public String saveCompraFromUI(
+            @RequestParam("inmuebleId") Long inmuebleId,
+            @RequestParam("title") String title,
+            @RequestParam("price") Double price,
+            @AuthenticationPrincipal UserPrincipal principal,
+            RedirectAttributes redirectAttributes) {
 
         log.info("Intento de compra desde UI por usuario ID: {} para inmueble ID: {}", principal != null ? principal.getId() : "ANONYMOUS", inmuebleId);
 
         if (principal == null || principal.getId() == null) {
-            // Si no hay usuario autenticado, no se puede comprar.
-            // Spring Security debería prevenir esto si el endpoint está protegido,
-            // pero una verificación adicional no hace daño.
-            // Redirigir a login podría ser una opción, o mostrar error.
             redirectAttributes.addFlashAttribute("mensajeErrorCompra", "Debes iniciar sesión para comprar.");
-            return "redirect:/login"; // O "redirect:/ui/catalogo" con el mensaje de error
+            return "redirect:/login";
         }
 
-        // Construir el DTO para enviar al microservicio de compras
         CompraDto compraParaEnviar = new CompraDto(
-                null,             // id de la compra (generado por el servicio de compras)
-                principal.getId(),// userId del usuario autenticado
-                inmuebleId,       // id del inmueble
-                title,            // título del inmueble
-                price,            // precio del inmueble
-                null              // purchaseDate (generado por el servicio de compras)
+                null,
+                principal.getId(),
+                inmuebleId,
+                title,
+                price,
+                null
         );
 
         try {
@@ -78,23 +79,22 @@ public class CompraController {
             redirectAttributes.addFlashAttribute("mensajeExitoCompra", "¡Inmueble '" + compraGuardada.title() + "' comprado exitosamente!");
         } catch (Exception e) {
             log.error("Error al procesar la compra para el inmueble ID {} por usuario ID {}: {}",
-                    inmuebleId, principal.getId(), e.getMessage(), e); // Log con más detalle
+                    inmuebleId, principal.getId(), e.getMessage(), e);
             redirectAttributes.addFlashAttribute("mensajeErrorCompra", "Hubo un error al procesar tu compra. Por favor, inténtalo de nuevo.");
         }
-        // Redirige de vuelta al catálogo después de la compra (o intento).
+
         return "redirect:/ui/catalogo";
     }
 
     /**
-     * Endpoint Gateway para obtener todas las compras del usuario autenticado.
-     * Este es un endpoint API que devuelve JSON, útil si se necesitara para JS o una app móvil.
-     * La UI "Mis Compras" usará un método similar en un controlador de UI.
-     * @param userPrincipal Detalles del usuario autenticado.
-     * @return ResponseEntity con la lista de compras (DTOs) y estado OK.
+     * Endpoint de API para obtener todas las compras realizadas por el usuario autenticado.
+     *
+     * @param userPrincipal El principal del usuario autenticado.
+     * @return Un {@link ResponseEntity} con una lista de {@link CompraDto} y estado 200 (OK),
+     * o 401 (Unauthorized) si no hay un usuario autenticado.
      */
-    @GetMapping("/api/mis-compras") // Ruta diferenciada para la API JSON
-    @ResponseBody // Asegura que devuelve JSON y no busca una vista
-    @Operation(summary = "Listar mis Compras (vía Gateway API)", description = "Solicita las compras del usuario autenticado al servicio de compras.")
+    @GetMapping("/api/mis-compras")
+    @ResponseBody
     public ResponseEntity<List<CompraDto>> getAllComprasOfUserAPI(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         if (userPrincipal == null || userPrincipal.getId() == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

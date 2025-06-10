@@ -6,13 +6,15 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.5</version> <relativePath/> </parent>
+		<version>3.2.5</version>
+		<relativePath/> </parent>
 
 	<groupId>com.dani</groupId>
 	<artifactId>spring-boot-microservice-3-api-gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-boot-microservice-3-api-gateway</name>
-	<description>API Gateway para el sistema de microservicios (Modernizado)</description> <url/>
+	<description>API Gateway para el sistema de microservicios (Modernizado)</description>
+	<url/>
 	<licenses>
 		<license/>
 	</licenses>
@@ -31,7 +33,7 @@
 		<spring-cloud.version>2023.0.1</spring-cloud.version>
 		<lombok.version>1.18.30</lombok.version>
 		<jjwt.version>0.11.5</jjwt.version>
-	</properties>
+		<springdoc-openapi.version>2.5.0</springdoc-openapi.version> </properties>
 
 	<dependencies>
 		<dependency>
@@ -57,7 +59,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-openfeign</artifactId> </dependency>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -72,12 +75,16 @@
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-jackson</artifactId> <version>${jjwt.version}</version>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>com.mysql</groupId> <artifactId>mysql-connector-j</artifactId> <scope>runtime</scope> </dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -102,19 +109,23 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.swagger.core.v3</groupId>
-			<artifactId>swagger-annotations</artifactId>
-			<version>2.2.22</version> </dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 
 	</dependencies>

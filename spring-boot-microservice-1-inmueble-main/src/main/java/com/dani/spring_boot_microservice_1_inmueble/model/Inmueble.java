@@ -1,87 +1,93 @@
 package com.dani.spring_boot_microservice_1_inmueble.model;
 
 import jakarta.persistence.*;
-import lombok.Data; // Importa la anotación @Data de Lombok para generar automáticamente getters, setters, toString, etc.
+import lombok.Data;
 
-// Imports de Jakarta Persistence API (JPA) para el mapeo objeto-relacional.
-
-import java.time.LocalDateTime; // Importa la clase para manejar fechas y horas.
+import java.time.LocalDateTime;
 
 /**
- * Representa la entidad Inmueble en la base de datos.
- * Esta clase define la estructura de la tabla 'inmueble' y sus campos
- * correspondientes.
- * Utiliza Lombok (@Data) para reducir el código boilerplate (getters, setters,
- * etc.).
+ * Entidad JPA que representa un Inmueble en el sistema.
+ * <p>
+ * Esta clase es el objeto de dominio principal para el {@code inmueble-service}.
+ * Almacena toda la información relevante de una propiedad, como su nombre, dirección,
+ * precio, estado y propietario.
+ * Está mapeada a la tabla "inmueble" en la base de datos PostgreSQL.
  *
- * @author TuNombre (o el autor original)
- * @version 1.0
- * @since 2025-05-03 (Fecha de creación o última modificación significativa)
+ * @author Daniel Núñez Rojas (danidev fullstack software)
+ * @version 1.1
+ * @since 2025-05-13 (Actualizado con JavaDoc completo)
  */
-@Data // Anotación de Lombok: genera getters, setters, equals, hashCode y toString.
-@Entity // Anotación JPA: marca esta clase como una entidad gestionada.
-@Table(name = "inmueble") // Anotación JPA: especifica el nombre de la tabla en la base de datos.
+@Entity
+@Table(name = "inmueble")
+@Data
 public class Inmueble {
 
     /**
-     * Identificador único del inmueble.
-     * Es la clave primaria de la tabla, generada automáticamente por la base de
-     * datos (estrategia IDENTITY).
+     * Identificador único del inmueble, generado automáticamente por la base de datos.
+     * Es la clave primaria de la tabla {@code inmueble}.
+     * Se utiliza la estrategia de generación {@link GenerationType#IDENTITY}.
      */
-    @Id // Anotación JPA: marca este campo como la clave primaria.
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Anotación JPA: especifica que el valor es generado
-                                                        // automáticamente por la BD (autoincremental).
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
-     * ID del usuario que creó o posee el inmueble.
-     * Este campo puede ser utilizado para establecer relaciones con otras entidades
-     * (ej. Usuario).
-     */
-    @Column(name = "user_id") // Nombre de la columna en la base de datos
-    private Long userId; // ID del usuario que creó/posee el inmueble
-
-    /**
      * Nombre descriptivo o título del inmueble.
-     * Mapeado a la columna 'nombre' en la base de datos.
+     * Este campo es obligatorio.
+     * Mapeado a la columna {@code nombre}.
      */
-    @Column(name = "nombre", length = 255) // Anotación JPA: mapea este campo a la columna 'nombre'. Se puede
-                                           // especificar longitud, nulabilidad, etc.
+    @Column(name = "nombre", nullable = false)
     private String name;
 
     /**
-     * Dirección física del inmueble.
-     * Mapeado a la columna 'direccion' en la base de datos.
+     * Dirección física completa del inmueble.
+     * Este campo es obligatorio.
+     * Mapeado a la columna {@code direccion}.
      */
-    @Column(name = "direccion", length = 500) // Mapea a la columna 'direccion'.
+    @Column(name = "direccion", nullable = false)
     private String address;
 
     /**
-     * URL o referencia a la imagen/foto principal del inmueble.
-     * Mapeado a la columna 'foto' en la base de datos.
-     * Podría ser una URL o un path a un archivo.
+     * URL que apunta a la imagen principal del inmueble.
+     * Este campo es opcional.
+     * Mapeado a la columna {@code foto}.
      */
-    @Column(name = "foto", length = 1024) // Mapea a la columna 'foto'. Aumentar longitud si son URLs largas.
+    @Column(name = "foto")
     private String picture;
 
     /**
      * Precio de venta o alquiler del inmueble.
-     * Mapeado a la columna 'precio' en la base de datos.
+     * Este campo es obligatorio.
+     * Mapeado a la columna {@code precio}.
      */
-    @Column(name = "precio") // Mapea a la columna 'precio'.
+    @Column(name = "precio", nullable = false)
     private Double price;
 
     /**
-     * Fecha y hora en que se registró o creó el inmueble en el sistema.
-     * Mapeado a la columna 'fecha' en la base de datos.
-     * Se asigna automáticamente en la capa de servicio al guardar.
+     * Fecha y hora exactas en que el inmueble fue registrado o creado en el sistema.
+     * Este campo se asigna automáticamente al momento de la creación.
+     * Mapeado a la columna {@code fecha_creacion}.
      */
-    @Column(name = "fecha") // Mapea a la columna 'fecha'.
+    @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime creationDate;
 
+    /**
+     * El identificador único del usuario (del sistema API Gateway) que es propietario
+     * o ha creado este inmueble.
+     * Este campo es crucial para la lógica de permisos.
+     * Mapeado a la columna {@code user_id}.
+     */
+    @Column(name = "user_id")
+    private Long userId;
 
-
-    @Enumerated(EnumType.STRING) // Indica que el enum se guardará como String en la BD
-    @Column(name = "estado", length = 50) // Define la columna y su longitud
+    /**
+     * El estado actual del inmueble (ej. {@link EstadoInmueble#DISPONIBLE}, {@link EstadoInmueble#VENDIDO}).
+     * Se almacena como una cadena de texto en la base de datos.
+     * Mapeado a la columna {@code estado}.
+     *
+     * @see EstadoInmueble Para los posibles valores.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado")
     private EstadoInmueble estado;
 }
